@@ -1,11 +1,22 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
+import { Period } from 'src/pages/MainPage'
+
 import {
   getTodayDateStr,
   getDayFromDateStr,
+  getMonthFromDateStr,
   shiftDateStr,
   getHoursFromMidnight,
 } from './dateUtils'
+
+interface CalendarEvent {
+  id: number
+  title: string
+  date: string
+  startTime: string
+  endTime: string
+}
 
 const TodayLabel = () => (
   <div className="todayLabel">
@@ -19,54 +30,103 @@ const TodayLabel = () => (
   </div>
 )
 
-function Day({ dateStr, selected, onClick }) {
+function Day({ dateStr, selected, dayStyle, onClick }) {
   return (
-    <div className="day-wrap">
-      <div
-        className={'day' + ' ' + (selected ? 'day-selected' : '')}
-        onClick={(e) => {
-          e.stopPropagation()
-          onClick(!selected)
-        }}
-      >
-        <span
-          className={selected ? 'day-name-selected' : 'day-name-unselected'}
-        >
-          {getDayFromDateStr(dateStr, 'short')}
-        </span>
-        {dateStr == getTodayDateStr() && <TodayLabel />}
-        <span
-          className={selected ? 'day-date-selected' : 'day-date-unselected'}
-        >
-          {dateStr.split('/').slice(0, 2).join('/')}
-        </span>
-      </div>
+    <div
+      className="day-wrap"
+      onClick={(e) => {
+        e.stopPropagation()
+        onClick(!selected)
+      }}
+    >
+      {dayStyle == 'week' && (
+        <div className={'day' + ' ' + (selected ? 'day-selected' : '')}>
+          <span
+            className={selected ? 'day-name-selected' : 'day-name-unselected'}
+          >
+            {getDayFromDateStr(dateStr, 'short')}
+          </span>
+          {dateStr == getTodayDateStr() && <TodayLabel />}
+          <span
+            className={selected ? 'day-date-selected' : 'day-date-unselected'}
+          >
+            {dateStr.split('/').slice(0, 2).join('/')}
+          </span>
+        </div>
+      )}
+      {dayStyle == 'month' && (
+        <div className={'day' + ' ' + (selected ? 'day-selected' : '')}>
+          <div
+            className={selected ? 'day-name-selected' : 'day-name-unselected'}
+          >
+            {dateStr.split('/')[1]}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
 
 const eventData = [
-  { id: 31, title: 'Breakfast with Tony', startTime: '7:00', endTime: '9:00' },
+  {
+    id: 31,
+    title: 'Breakfast with Tony',
+    date: '11/09/2023',
+    startTime: '7:00',
+    endTime: '9:00',
+  },
   {
     id: 21,
     title: 'Call with Hong Kong Office',
+    date: '11/09/2023',
     startTime: '8:30',
     endTime: '9:30',
   },
-  { id: 35, title: 'Vendor Call', startTime: '9:00', endTime: '10:00' },
-  { id: 42, title: 'Afternoon Tea', startTime: '15:00', endTime: '17:00' },
-  { id: 45, title: 'Sales Presentation', startTime: '15:00', endTime: '17:00' },
-  { id: 47, title: 'Haircut', startTime: '16:00', endTime: '17:00' },
+  {
+    id: 35,
+    title: 'Vendor Call',
+    date: '11/09/2023',
+    startTime: '9:00',
+    endTime: '10:00',
+  },
+  {
+    id: 42,
+    title: 'Afternoon Tea',
+    date: '11/09/2023',
+    startTime: '15:00',
+    endTime: '17:00',
+  },
+  {
+    id: 45,
+    title: 'Sales Presentation',
+    date: '11/09/2023',
+    startTime: '15:00',
+    endTime: '17:00',
+  },
+  {
+    id: 47,
+    title: 'Haircut',
+    date: '11/09/2023',
+    startTime: '16:00',
+    endTime: '17:00',
+  },
   {
     id: 13,
     title: 'Coffee Chat with Marcus',
+    date: '11/09/2023',
     startTime: '15:00',
     endTime: '15:30',
   },
-  { id: 56, title: 'Dinner with Sue', startTime: '19:00', endTime: '21:00' },
+  {
+    id: 56,
+    title: 'Dinner with Sue',
+    date: '11/09/2023',
+    startTime: '19:00',
+    endTime: '21:00',
+  },
 ]
 
-function checkEventsOverlap(evt1, evt2) {
+function checkEventsOverlap(evt1: CalendarEvent, evt2: CalendarEvent) {
   console.log(evt1, evt2)
   const startTime1 = Number(evt1.startTime.split(':').join(''))
   const startTime2 = Number(evt2.startTime.split(':').join(''))
@@ -96,7 +156,7 @@ function findHorzPosnGap(sortedArr) {
   }
 }
 
-function compareEvents(evt1, evt2) {
+function compareEvents(evt1: CalendarEvent, evt2: CalendarEvent) {
   const startTime1 = Number(evt1.startTime.split(':').join(''))
   const startTime2 = Number(evt2.startTime.split(':').join(''))
   const endTime1 = Number(evt1.endTime.split(':').join(''))
@@ -167,7 +227,7 @@ function getDurationHrs(startTime: string, endTime: string) {
   return hoursDiff + minutesDiff / 60
 }
 
-function CalendarEvent({ event }) {
+function CalendarEventUI({ event, selected, onClick }) {
   const widthPct = Math.floor(100 / (1 + event.nOverlaps))
   const durationHrs = getDurationHrs(event.startTime, event.endTime)
   const hrsFromMidnight = getHoursFromMidnight(event.startTime)
@@ -175,12 +235,18 @@ function CalendarEvent({ event }) {
   return (
     <div
       key={event.id}
-      className="calendar-event"
+      className={
+        'calendar-event' + ' ' + (selected ? 'calendar-event-selected' : '')
+      }
       style={{
         width: String(widthPct) + '%',
         height: String((durationHrs / 24) * 100) + '%',
         left: String((event.horzPosn - 1) * widthPct) + '%',
         top: String((hrsFromMidnight / 24) * 100) + '%',
+      }}
+      onClick={(e) => {
+        e.stopPropagation()
+        onClick(selected, event)
       }}
     >
       {event.title}
@@ -203,7 +269,7 @@ function TimeBar({ hour }) {
   )
 }
 
-function DayCalendar() {
+function DayCalendar({ selectedPeriod, onEventClick }) {
   return (
     <div className="day-calendar">
       <div className="day-calendar-time-axis">
@@ -213,7 +279,14 @@ function DayCalendar() {
       </div>
       <div className="day-calendar-events">
         {arrangeEvents(eventData).map((evt) => (
-          <CalendarEvent key={evt.id} event={evt} />
+          <CalendarEventUI
+            key={evt.id}
+            event={evt}
+            onClick={onEventClick}
+            selected={
+              selectedPeriod.type == 'event' && selectedPeriod.id == evt.id
+            }
+          />
         ))}
       </div>
     </div>
@@ -222,7 +295,22 @@ function DayCalendar() {
 
 function DayView({ startTime, selectedPeriod, onPeriodSelect }) {
   function selectThisDay() {
-    console.log('select this day!')
+    console.log('selected the day! boom')
+    onPeriodSelect({ type: 'day', date: selectedPeriod.date })
+  }
+
+  function selectEvent(alreadySelected: boolean, calendarEvent: CalendarEvent) {
+    console.log('selected the event! hurrah')
+    if (!alreadySelected) {
+      onPeriodSelect({
+        type: 'event',
+        date: calendarEvent.date,
+        time: calendarEvent.startTime,
+        id: calendarEvent.id,
+      })
+    } else {
+      selectThisDay()
+    }
   }
 
   const initialScrollPosn = getHoursFromMidnight(startTime) / 24
@@ -231,28 +319,78 @@ function DayView({ startTime, selectedPeriod, onPeriodSelect }) {
   const header = day + ', ' + date
 
   return (
-    <div className="day-view">
+    <div className="day-view" onClick={selectThisDay}>
       <div className="day-view-header">{header}</div>
-      <DayCalendar />
+      <DayCalendar selectedPeriod={selectedPeriod} onEventClick={selectEvent} />
     </div>
   )
 }
 
 function MonthView({ startDate, selectedPeriod, onPeriodSelect }) {
-  return <div>Hello Month</div>
+  return (
+    <div className="month-view">
+      <div className="month-header">This Month</div>
+      {[0, 1, 2, 3, 4].map((week) => (
+        <DaysInAWeek
+          key={shiftDateStr(startDate, week * 7)}
+          startDate={shiftDateStr(startDate, week * 7)}
+          selectedPeriod={selectedPeriod}
+          dayStyle="month"
+          onPeriodSelect={onPeriodSelect}
+        />
+      ))}
+    </div>
+  )
+}
+
+function DaysInAWeek({
+  startDate,
+  selectedPeriod,
+  dayStyle = 'week',
+  onPeriodSelect,
+}) {
+  const dates = [0, 1, 2, 3, 4, 5, 6].map((day) => shiftDateStr(startDate, day))
+  return (
+    <div
+      className="week-view"
+      style={{ width: dayStyle == 'month' ? '40%' : '100%' }}
+    >
+      {dates.map((dateStr) => (
+        <Day
+          dateStr={dateStr}
+          dayStyle={dayStyle}
+          selected={
+            selectedPeriod.type == 'day' && selectedPeriod.date == dateStr
+          }
+          onClick={(isNotSelected: boolean) => {
+            if (isNotSelected) {
+              onPeriodSelect({ type: 'day', date: dateStr })
+            } else {
+              onPeriodSelect({ type: 'week', date: startDate })
+            }
+          }}
+          key={dateStr}
+        />
+      ))}
+    </div>
+  )
 }
 
 function WeekView({ startDate, selectedPeriod, onPeriodSelect }) {
-  const dates = [0, 1, 2, 3, 4, 5, 6].map((day) => shiftDateStr(startDate, day))
-
   const selectThisWeek = () => {
-    console.log('clicked on the week!')
-    onPeriodSelect('week', startDate)
+    onPeriodSelect({ type: 'week', date: startDate })
   }
 
   return (
     <>
-      <div className="week-view-wrapper" onClick={selectThisWeek}>
+      <div
+        className={
+          'week-view-wrapper' +
+          ' ' +
+          (selectedPeriod.type == 'week' ? 'week-view-wrapper-selected' : '')
+        }
+        onClick={selectThisWeek}
+      >
         <div
           className={
             'week-view-header' +
@@ -262,24 +400,11 @@ function WeekView({ startDate, selectedPeriod, onPeriodSelect }) {
         >
           Your week at a glance.
         </div>
-        <div className="week-view">
-          {dates.map((dateStr) => (
-            <Day
-              dateStr={dateStr}
-              selected={
-                selectedPeriod.type == 'day' && selectedPeriod.date == dateStr
-              }
-              onClick={(isNotSelected: boolean) => {
-                if (isNotSelected) {
-                  onPeriodSelect('day', dateStr)
-                } else {
-                  onPeriodSelect('week', startDate)
-                }
-              }}
-              key={dateStr}
-            />
-          ))}
-        </div>
+        <DaysInAWeek
+          startDate={startDate}
+          selectedPeriod={selectedPeriod}
+          onPeriodSelect={onPeriodSelect}
+        />
       </div>
     </>
   )
@@ -291,13 +416,7 @@ export default function PeriodView({
   selectedPeriod,
   onPeriodSelect,
 }) {
-  const handlePeriodSelect = (
-    type: string,
-    date: string,
-    time: string | null = null
-  ) => {
-    const periodData = { type, date, time }
-    console.log(periodData)
+  const handlePeriodSelect = (periodData: Period) => {
     onPeriodSelect(periodData)
   }
 

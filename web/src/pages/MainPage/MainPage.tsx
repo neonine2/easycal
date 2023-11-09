@@ -15,6 +15,7 @@ export interface Period {
   type: string
   date: string
   time: string | null
+  id: number | null
 }
 
 export default function MainPage() {
@@ -23,14 +24,27 @@ export default function MainPage() {
   const [anchorPeriod, setAnchorPeriod] = useState({
     date: getTodayDateStr(),
     time: getTimeNowStr(),
+    id: null,
   })
   const [selectedPeriod, selectPeriod] = useState({
     type: 'week',
     ...anchorPeriod,
   })
 
-  const handlePeriodContextChange = (new_context: string) =>
+  const handlePeriodContextChange = (new_context: string) => {
+    if (periodContext == 'day') {
+      selectPeriod({ ...selectedPeriod, type: 'day' })
+    } else if (periodContext == 'week' && new_context == 'day') {
+      selectPeriod({ ...selectedPeriod, type: new_context })
+    } else if (
+      periodContext == 'month' &&
+      (new_context == 'week' || new_context == 'day')
+    ) {
+      selectPeriod({ ...selectedPeriod, type: new_context })
+    }
     setPeriodContext(new_context)
+  }
+
   const handleSelectedPageChange = (new_page: string) =>
     setSelectedPage(new_page)
 

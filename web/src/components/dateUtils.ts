@@ -63,10 +63,44 @@ export function formatDay(day: number, format = 'short') {
   return format == 'short' ? dayNamesShort[day] : dayNamesLong[day]
 }
 
+export function formatMonth(month: number, format = 'short') {
+  const monthNamesShort = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ]
+  const monthNamesLong = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ]
+  return format == 'short' ? monthNamesShort[month] : monthNamesLong[month]
+}
+
 export const getDayFromDateStr = (datestr: string, format = 'long') => {
-  const test = StrToDate(datestr)
-  console.log(test.getDay())
   return getDayStr(StrToDate(datestr), format)
+}
+
+export const getMonthFromDateStr = (datestr: string, format = 'long') => {
+  return getMonthStr(StrToDate(datestr), format)
 }
 
 export const shiftDateStr = (datestr: string, days: number) =>
@@ -80,4 +114,8 @@ export const getTodaySimpleDate = () => getDateStr(new Date())
 
 export const getDayStr = (date: Date, format = 'long') => {
   return formatDay(date.getDay(), format)
+}
+
+export const getMonthStr = (date: Date, format = 'long') => {
+  return formatMonth(date.getMonth(), format)
 }
