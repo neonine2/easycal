@@ -59,7 +59,6 @@ body, html {
 .month-view {
   margin-top: 2%;
   height: 55vh;
-  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: stretch;
@@ -67,7 +66,6 @@ body, html {
 }
 
 .week-view {
-  width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -129,6 +127,17 @@ body, html {
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
+  border: 1.5px dashed #666;
+  border-radius: 10px;
+  background: none;
+}
+
+.day-month {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
   border: 1.5px dashed #666;
   border-radius: 10px;
   background: none;
@@ -312,8 +321,8 @@ body, html {
 .todayLabel {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  align-items: stretch;
+  justify-content: center;
+  align-items: center;
   color: #ed2e38;
   font-weight: bolder;
 }
