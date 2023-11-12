@@ -62,7 +62,7 @@
   padding-bottom: 1rem;
 }
 .rw-segment {
-  border-radius: 0.5rem;
+  border-radius: 1.5rem;
   border-width: 1px;
   border-color: #e5e7eb;
   overflow: hidden;
@@ -87,30 +87,33 @@
   border-radius: 10px;
 }
 .rw-segment-header {
-  background-color: #e2e8f0;
+  background-color: #dedede;
+  border-width: 0px 0px 1px 0px;
+  border-style: solid;
+  border-color: #333;
   color: #4a5568;
   padding: 0.75rem 1rem;
 }
 .rw-segment-main {
-  background-color: #f7fafc;
+  background-color: #dedede;
   padding: 1rem;
 }
 .rw-link {
-  color: #4299e1;
+  color: #666;
   text-decoration: underline;
 }
 .rw-link:hover {
-  color: #2b6cb0;
+  color: #555;
 }
 .rw-forgot-link {
   font-size: 0.75rem;
-  color: #a0aec0;
+  color: #666;
   text-align: right;
   margin-top: 0.1rem;
 }
 .rw-forgot-link:hover {
   font-size: 0.75rem;
-  color: #4299e1;
+  color: #555
 }
 .rw-heading {
   font-weight: 600;
@@ -160,7 +163,8 @@
 }
 .rw-button {
   border: none;
-  color: #718096;
+  color: #333;
+  background-color: #efefef;
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -175,8 +179,8 @@
   border: 0;
 }
 .rw-button:hover {
-  background-color: #718096;
-  color: #fff;
+  background-color: #bbb;
+  color: #efefef;
 }
 .rw-button.rw-button-small {
   font-size: 0.75rem;
@@ -374,6 +378,7 @@
   width: 24rem;
   margin: 4rem auto;
   flex-wrap: wrap;
+  background-color: #efefef;
 }
 .rw-login-container .rw-form-wrapper {
   width: 100%;

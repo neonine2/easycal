@@ -56,7 +56,17 @@ const SignupPage = () => {
         <div className="rw-scaffold rw-login-container">
           <div className="rw-segment">
             <header className="rw-segment-header">
-              <h2 className="rw-heading rw-heading-secondary">Signup</h2>
+              <h2
+                style={{
+                  textAlign: 'center',
+                  color: '#333',
+                  fontWeight: 'bolder',
+                  fontSize: '1.5em',
+                }}
+                className="rw-heading rw-heading-secondary"
+              >
+                Welcome to EasyCal!
+              </h2>
             </header>
 
             <div className="rw-segment-main">
@@ -125,9 +135,7 @@ const SignupPage = () => {
                   <FieldError name="password" className="rw-field-error" />
 
                   <div className="rw-button-group">
-                    <Submit className="rw-button rw-button-blue">
-                      Sign Up
-                    </Submit>
+                    <Submit className="rw-button">Sign Up</Submit>
                   </div>
                 </Form>
               </div>

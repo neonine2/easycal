@@ -32,8 +32,8 @@ const Routes = () => {
       <Route path="/signup" page={SignupPage} name="signup" />
       <Route path="/forgot-password" page={ForgotPasswordPage} name="forgotPassword" />
       <Route path="/reset-password" page={ResetPasswordPage} name="resetPassword" />
-      <Route path="/" name="home" page={HomePage} />
-      <Route path="/main" name="main" page={MainPage} />
+      <Route path="/" name="main" page={MainPage} />
+      <Route notfound page={NotFoundPage} />
     </Router>
   )
 }

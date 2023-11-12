@@ -646,3 +646,97 @@ since the element has position: absolute. */
   overflow: hidden;
 }
 
+.start-page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.25em;
+}
+
+.start-header {
+  color: #333;
+  width: 100%;
+  text-align: center;
+  border-width: 0px 0px 2px 0px;
+  border-style: solid;
+  border-color: #ccc;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  font-size: 4.0em;
+  font-weight: bolder;
+  margin-bottom: 25px;
+}
+
+.two-button-menu {
+  height: 60px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: stretch;
+  overflow: hidden;
+  border: 4px solid #dedede;
+  border-radius: 0px 0px 25px 25px;
+  padding: 5px;
+}
+
+.two-button-menu button {
+  width: 50%;
+  outline: none;
+  border: none;
+  font-size: 1.0em;
+  color: #333;
+  background-color: #efefef;
+}
+
+.two-button-menu a {
+  color: #555;
+  text-decoration: none;
+  font-size: 1.25em;
+}
+
+.two-button-menu a:hover {
+  /* background-color: #ccc; */
+  font-weight: bolder;
+  cursor: pointer;
+}
+
+.feature-display-wrapper {
+  height: 100vh;
+  border-radius: 30px 30px 0px 0px;
+}
+
+.feature-display {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  padding-top: 50px;
+  padding-left: 50px;
+  padding-right: 75px;
+  padding-bottom: 20px;
+  border-radius: 30px 30px 0px 0px;
+  background-color: #dedede;
+}
+
+.feature-display-header {
+  font-size: 1.5em;
+  font-weight: bolder;
+}
+
+.feature-display ul {
+  width: 100%;
+  font-size: 1.25em;
+}
+
+.feature-display li {
+  width: 100%;
+  margin: 5%;
+}
+
+.feature-display li::marker {
+  content: '✔️ ';
+}
+

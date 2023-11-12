@@ -20,7 +20,7 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate(routes.home())
+      navigate(routes.main())
     }
   }, [isAuthenticated])
 
@@ -53,7 +53,17 @@ const LoginPage = () => {
         <div className="rw-scaffold rw-login-container">
           <div className="rw-segment">
             <header className="rw-segment-header">
-              <h2 className="rw-heading rw-heading-secondary">Login</h2>
+              <h2
+                style={{
+                  textAlign: 'center',
+                  color: '#333',
+                  fontWeight: 'bolder',
+                  fontSize: '1.5em',
+                }}
+                className="rw-heading rw-heading-secondary"
+              >
+                Welcome back!
+              </h2>
             </header>
 
             <div className="rw-segment-main">
@@ -113,7 +123,7 @@ const LoginPage = () => {
                   <FieldError name="password" className="rw-field-error" />
 
                   <div className="rw-button-group">
-                    <Submit className="rw-button rw-button-blue">Login</Submit>
+                    <Submit className="rw-button">Login</Submit>
                   </div>
                 </Form>
               </div>

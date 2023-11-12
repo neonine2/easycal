@@ -8,6 +8,7 @@ import {
 import { SubmitHandler } from '@redwoodjs/forms'
 import { useMutation } from '@redwoodjs/web'
 import { Head } from '@redwoodjs/web'
+import { toast, Toaster } from '@redwoodjs/web/toast'
 
 import { useAuth } from 'src/auth'
 import AddEventForm from 'src/components/AddEventForm'
@@ -19,6 +20,8 @@ import {
 import NavToolbar from 'src/components/NavToolbar'
 import PeriodView from 'src/components/PeriodView'
 import Summary from 'src/components/Summary'
+
+import HomePage from '../StartPage/StartPage'
 
 export function EasyCal() {
   return <span className="easycal-logo">EasyCal</span>
@@ -58,11 +61,16 @@ const getEventType = (periodContext, selectedPeriod) => {
 
 export default function MainPage() {
   const { isAuthenticated, currentUser, logOut } = useAuth()
-  const [createEvent] = useMutation<
+  const [addingEvent, toggleAddingEvent] = useState(false)
+  const [createEvent, { loading, error }] = useMutation<
     CreateCalendarEventMutation,
     CreateCalendarEventMutationVariables
-  >(CREATE_EVENT)
-  const [addingEvent, toggleAddingEvent] = useState(false)
+  >(CREATE_EVENT, {
+    onCompleted: () => {
+      toast.success('Event created.')
+      setTimeout(() => toggleAddingEvent(false), 1000)
+    },
+  })
   const [selectedPage, setSelectedPage] = useState('calendar')
   const [periodContext, setPeriodContext] = useState('week')
   const [anchorPeriod, setAnchorPeriod] = useState({
@@ -135,7 +143,7 @@ export default function MainPage() {
     toggleAddingEvent(false)
   }
 
-  return (
+  return isAuthenticated ? (
     <div className="main-page">
       <Head>
         <title>Calendar</title>
@@ -183,13 +191,17 @@ export default function MainPage() {
             />
           )}
           {addingEvent && (
-            <AddEventForm
-              onSubmit={onAddEventSubmit}
-              onCancel={onAddEventCancel}
-              heading={getAddEventFormHeading()}
-              eventType={eventType}
-              setEventType={setEventType}
-            />
+            <>
+              <Toaster />
+              <AddEventForm
+                onSubmit={onAddEventSubmit}
+                disableSubmit={loading}
+                onCancel={onAddEventCancel}
+                heading={getAddEventFormHeading()}
+                eventType={eventType}
+                setEventType={setEventType}
+              />
+            </>
           )}
         </div>
       )}
@@ -201,5 +213,7 @@ export default function MainPage() {
         ></button>
       </div>
     </div>
+  ) : (
+    <HomePage />
   )
 }

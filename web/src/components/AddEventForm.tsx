@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 import { Form, Submit, TextField, SelectField, Label } from '@redwoodjs/forms'
 
 export default function AddEventForm({
@@ -8,6 +6,7 @@ export default function AddEventForm({
   heading,
   onSubmit,
   onCancel,
+  disableSubmit,
 }) {
   const submitButtonStyling = {
     fontSize: '1.15em',
@@ -52,7 +51,11 @@ export default function AddEventForm({
         <TextAreaField className="add-event-notes" name="notes" />
       </div> */}
       <div className="add-event-form-buttons">
-        <Submit className="add-event-submit" style={submitButtonStyling}>
+        <Submit
+          disabled={disableSubmit}
+          className="add-event-submit"
+          style={submitButtonStyling}
+        >
           ✔️
         </Submit>
         <button
