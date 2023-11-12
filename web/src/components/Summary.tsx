@@ -5,26 +5,35 @@ function SummaryTitle({ periodContext, selectedPeriod }) {
   switch (periodContext) {
     case 'day':
       if (selectedPeriod.type == 'day') {
-        title = '1'
+        title =
+          getDayFromDateStr(selectedPeriod.date) +
+          ', ' +
+          selectedPeriod.date.split('/').slice(0, 2).join('/')
       } else if (selectedPeriod.type == 'event') {
-        title = '2'
+        title = 'Event: ' + selectedPeriod.title
       }
       break
     case 'week':
       if (selectedPeriod.type == 'week') {
-        title = '3'
+        title = 'Week Summary'
       } else if (selectedPeriod.type == 'day') {
-        title = '4'
+        title =
+          getDayFromDateStr(selectedPeriod.date) +
+          ', ' +
+          selectedPeriod.date.split('/').slice(0, 2).join('/')
       }
       break
     case 'month':
       if (selectedPeriod.type == 'month') {
-        title = '5'
-      } else if (selectedPeriod.type == 'week') {
-        title = '6'
+        title = 'Month Summary'
+      } else if (selectedPeriod.type == 'day') {
+        title =
+          getDayFromDateStr(selectedPeriod.date) +
+          ', ' +
+          selectedPeriod.date.split('/').slice(0, 2).join('/')
       }
   }
-  return <h2 style={{ fontWeight: 'bolder' }}>{title}</h2>
+  return <div className="summary-header">{title}</div>
 }
 
 function PeriodSummary({ periodContext, selectedPeriod }) {

@@ -8,6 +8,7 @@ import {
   getMonthFromDateStr,
   shiftDateStr,
   getHoursFromMidnight,
+  shiftDate,
 } from './dateUtils'
 
 interface CalendarEvent {
@@ -18,21 +19,19 @@ interface CalendarEvent {
   endTime: string
 }
 
-const TodayLabel = ({ context = 'week' }) => (
-  <div
-    className="todayLabel"
-    style={context == 'month' ? { height: '20%' } : {}}
-  >
+const TodayLabel = () => (
+  <div className="todayLabel">
     <svg xmlns="http://www.w3.org/2000/svg" height="100%" viewBox="0 0 576 512">
       <path
         d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"
         fill="#ed2e38"
       />
     </svg>
+    Today
   </div>
 )
 
-function Day({ dateStr, selected, dayStyle, onClick }) {
+function Day({ dateStr, selected, onClick }) {
   return (
     <div
       className="day-wrap"
@@ -41,32 +40,19 @@ function Day({ dateStr, selected, dayStyle, onClick }) {
         onClick(!selected)
       }}
     >
-      {dayStyle == 'week' && (
-        <div className={'day' + ' ' + (selected ? 'day-selected' : '')}>
-          <span
-            className={selected ? 'day-name-selected' : 'day-name-unselected'}
-          >
-            {getDayFromDateStr(dateStr, 'short')}
-          </span>
-          {dateStr == getTodayDateStr() && <TodayLabel />}
-          <span
-            className={selected ? 'day-date-selected' : 'day-date-unselected'}
-          >
-            {dateStr.split('/').slice(0, 2).join('/')}
-          </span>
-        </div>
-      )}
-      {dayStyle == 'month' && (
-        <div className={'day-month' + ' ' + (selected ? 'day-selected' : '')}>
-          <div
-            className={selected ? 'day-name-selected' : 'day-name-unselected'}
-            style={{ textAlign: 'center', fontSize: '1.5em' }}
-          >
-            {dateStr.split('/')[1]}
-          </div>
-          {/* {dateStr == getTodayDateStr() && <TodayLabel context="month" />} */}
-        </div>
-      )}
+      <div className={'day' + ' ' + (selected ? 'day-selected' : '')}>
+        <span
+          className={selected ? 'day-name-selected' : 'day-name-unselected'}
+        >
+          {getDayFromDateStr(dateStr, 'short')}
+        </span>
+        {dateStr == getTodayDateStr() && <TodayLabel />}
+        <span
+          className={selected ? 'day-date-selected' : 'day-date-unselected'}
+        >
+          {dateStr.split('/').slice(0, 2).join('/')}
+        </span>
+      </div>
     </div>
   )
 }
@@ -310,6 +296,7 @@ function DayView({ startTime, selectedPeriod, onPeriodSelect }) {
         type: 'event',
         date: calendarEvent.date,
         time: calendarEvent.startTime,
+        title: calendarEvent.title,
         id: calendarEvent.id,
       })
     } else {
@@ -330,39 +317,110 @@ function DayView({ startTime, selectedPeriod, onPeriodSelect }) {
   )
 }
 
-function MonthView({ startDate, selectedPeriod, onPeriodSelect }) {
+function WeekDayHeader({ startDate, nDays = 7 }) {
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
   return (
-    <div className="month-view">
-      <div className="month-header">Your Month</div>
-      {[0, 1, 2, 3, 4].map((week) => (
-        <DaysInAWeek
-          key={shiftDateStr(startDate, week * 7)}
-          startDate={shiftDateStr(startDate, week * 7)}
-          selectedPeriod={selectedPeriod}
-          dayStyle="month"
-          onPeriodSelect={onPeriodSelect}
-        />
+    <>
+      {days.map((day) => (
+        <div className="weekday-header" key={day}>
+          {day}
+        </div>
       ))}
+    </>
+  )
+}
+
+function DayInAMonth({ date, selected, onClick }) {
+  return (
+    <div
+      key={date}
+      className="day-in-a-month-wrapper"
+      onClick={(e) => {
+        e.stopPropagation()
+        onClick(!selected)
+      }}
+    >
+      <div
+        key={date}
+        className={'day-in-a-month' + ' ' + (selected ? 'day-selected' : '')}
+      >
+        <div className="day-date-month-name">
+          {getMonthFromDateStr(date, 'short')}
+        </div>
+        <div className="day-date-label">
+          {date.split('/')[1].slice(0, 1) == '0'
+            ? date.split('/')[1][1]
+            : date.split('/')[1]}
+        </div>
+        {date == getTodayDateStr() && (
+          <div className="day-date-special">Today</div>
+        )}
+      </div>
     </div>
   )
 }
 
-function DaysInAWeek({
-  startDate,
-  selectedPeriod,
-  dayStyle = 'week',
-  onPeriodSelect,
-}) {
+function MonthView({ startDate, selectedPeriod, onPeriodSelect }) {
+  const selectThisMonth = () => {
+    onPeriodSelect({ type: 'month', date: startDate })
+  }
+
+  // make two views possible: landscape view with 14 days in each row
+  // and square/traditional view with 7 days in each row
+  const dates1D = Array.from(new Array(28), (v, i) =>
+    shiftDateStr(startDate, i)
+  )
+
+  const dates2D = []
+  while (dates1D.length) {
+    dates2D.push(dates1D.splice(0, 7))
+  }
+
+  const nCols = 7
+  const nRows = 4
+  const rows = [1, 2, 3, 4]
+  const maxHeightForRows = 95 / (nCols / nRows)
+  return (
+    <div className="month-view-wrapper" onClick={selectThisMonth}>
+      <div className="month-view-header">Your month at a glance.</div>
+      <div className="days-in-a-month">
+        <div
+          className="days-in-a-month-rows"
+          style={{ maxHeight: String(maxHeightForRows) + 'vw' }}
+        >
+          {rows.map((rowName, rowIdx) => (
+            <div key={rowIdx} className="days-in-a-month-row">
+              {dates2D[rowIdx].map((date) => (
+                <DayInAMonth
+                  key={date}
+                  selected={
+                    selectedPeriod.type == 'day' && selectedPeriod.date == date
+                  }
+                  date={date}
+                  onClick={(isNotSelected: boolean) => {
+                    if (isNotSelected) {
+                      onPeriodSelect({ type: 'day', date: date })
+                    } else {
+                      onPeriodSelect({ type: 'month', date: startDate })
+                    }
+                  }}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function DaysInAWeek({ startDate, selectedPeriod, onPeriodSelect }) {
   const dates = [0, 1, 2, 3, 4, 5, 6].map((day) => shiftDateStr(startDate, day))
   return (
-    <div
-      className="week-view"
-      style={dayStyle == 'month' ? { flexBasis: 0, flexGrow: 1 } : {}}
-    >
+    <div className="week-view">
       {dates.map((dateStr) => (
         <Day
           dateStr={dateStr}
-          dayStyle={dayStyle}
           selected={
             selectedPeriod.type == 'day' && selectedPeriod.date == dateStr
           }
