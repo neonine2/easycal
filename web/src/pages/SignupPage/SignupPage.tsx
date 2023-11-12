@@ -25,13 +25,14 @@ const SignupPage = () => {
   }, [isAuthenticated])
 
   // focus on email box on page load
-  const emailRef = useRef<HTMLInputElement>(null)
+  const nameRef = useRef<HTMLInputElement>(null)
   useEffect(() => {
-    emailRef.current?.focus()
+    nameRef.current?.focus()
   }, [])
 
   const onSubmit = async (data: Record<string, string>) => {
     const response = await signUp({
+      name: data.name,
       username: data.email,
       password: data.password,
     })
@@ -62,6 +63,27 @@ const SignupPage = () => {
               <div className="rw-form-wrapper">
                 <Form onSubmit={onSubmit} className="rw-form-wrapper">
                   <Label
+                    name="name"
+                    className="rw-label"
+                    errorClassName="rw-label rw-label-error"
+                  >
+                    Name
+                  </Label>
+                  <TextField
+                    name="name"
+                    className="rw-input"
+                    errorClassName="rw-input rw-input-error"
+                    ref={nameRef}
+                    validation={{
+                      required: {
+                        value: true,
+                        message: 'Name is required',
+                      },
+                    }}
+                  />
+                  <FieldError name="name" className="rw-field-error" />
+
+                  <Label
                     name="email"
                     className="rw-label"
                     errorClassName="rw-label rw-label-error"
@@ -72,7 +94,6 @@ const SignupPage = () => {
                     name="email"
                     className="rw-input"
                     errorClassName="rw-input rw-input-error"
-                    ref={emailRef}
                     validation={{
                       required: {
                         value: true,

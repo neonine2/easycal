@@ -9,6 +9,7 @@ import { SubmitHandler } from '@redwoodjs/forms'
 import { useMutation } from '@redwoodjs/web'
 import { Head } from '@redwoodjs/web'
 
+import { useAuth } from 'src/auth'
 import AddEventForm from 'src/components/AddEventForm'
 import {
   getDayFromDateStr,
@@ -56,6 +57,7 @@ const getEventType = (periodContext, selectedPeriod) => {
 }
 
 export default function MainPage() {
+  const { isAuthenticated, currentUser, logOut } = useAuth()
   const [createEvent] = useMutation<
     CreateCalendarEventMutation,
     CreateCalendarEventMutationVariables
@@ -140,7 +142,7 @@ export default function MainPage() {
       </Head>
       <div className="header">
         <div style={{ flex: '1 1 0', textAlign: 'left', fontSize: '0.75em' }}>
-          Hi, Yui.
+          {isAuthenticated && `Hi, ${currentUser.name}.`}
         </div>
         <div
           style={{
@@ -151,7 +153,7 @@ export default function MainPage() {
             color: '#333',
           }}
         >
-          YourCalendar.ai
+          EasyCal.ai
         </div>
         <div
           style={{ flex: '1 1 0', textAlign: 'right', fontSize: '0.75em' }}
@@ -193,7 +195,10 @@ export default function MainPage() {
       )}
 
       <div className="footer">
-        <button className="icon icon-logout-left"></button>
+        <button
+          className="logout-button icon icon-logout-left"
+          onClick={logOut}
+        ></button>
       </div>
     </div>
   )

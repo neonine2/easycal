@@ -11,7 +11,7 @@ export const standard = defineScenario<Prisma.CalendarEventCreateArgs>({
         endDate: 'String',
         user: {
           create: {
-            email: 'String270165',
+            email: 'String6768630',
             name: 'String',
             hashedPassword: 'String',
             salt: 'String',
@@ -27,7 +27,7 @@ export const standard = defineScenario<Prisma.CalendarEventCreateArgs>({
         endDate: 'String',
         user: {
           create: {
-            email: 'String5995022',
+            email: 'String2091617',
             name: 'String',
             hashedPassword: 'String',
             salt: 'String',

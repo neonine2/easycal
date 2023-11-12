@@ -38,8 +38,8 @@ body, html {
   padding-right: 10px;
   height: 30px;
   display: flex;
-  flex-direction: row;
-  justify-content: left;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
   background-color: #efefef;
   font-size: 1.0em;
@@ -373,6 +373,15 @@ body, html {
 
 .icon-logout-left {
   background-image: url("../public/arrow-left-from-bracket-solid-gray.svg");
+}
+
+.logout-button {
+  width: 40px;
+  border-radius: 10px;
+}
+
+.logout-button:hover {
+  background-color: #ddd;
 }
 
 .date-toggle {
